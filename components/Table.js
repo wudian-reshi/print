@@ -226,7 +226,7 @@ window.Table = class table extends React.Component {
 
                 let hide = antd.message.info('正在打印标签, 请稍后', 0);
                 new Promise((resolve, reject) => {
-                    printTags(this.pushQrcode(res.data), resolve, reject);
+                    printTags(res.data, resolve, reject);
                 }).then((e) => {
                     hide();
                     antd.message.success('标签打印成功!', 2);
@@ -259,14 +259,6 @@ window.Table = class table extends React.Component {
             })
     }
 
-    pushQrcode(data) {
-        let len = data.length;
-        for (let i = 0; i < len; i++) {
-            data[i]['img'] = jrQrcode.getQrBase64(data[i].id);
-        }
-
-        return data;
-    }
     render() {
         return (
             <antd.Table dataSource={this.state.dataSource} columns={this.state.columns} loading={this.state.loading}/>
