@@ -131,7 +131,7 @@ window.Table = class table extends React.Component {
             dataSource: copyData,
         })
 
-        fetch(`http://192.168.1.176:81/api/batches?date=${this.state.date}&device_id=${device.id}`)
+        fetch(`http://192.168.1.176:81/api/goods?date=${this.state.date}&device_id=${device.id}`)
             .then((response) => {
                 return response.json();
             })
