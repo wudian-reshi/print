@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>吾点热食打印系统</title>
+    <link href="https://s1.pstatp.com/cdn/expire-1-M/antd/3.24.2/dist/antd.min.css" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" href="./index.css">
+    <style>
+        html, body, #root {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://s2.pstatp.com/cdn/expire-1-M/babel-standalone/7.0.0-alpha.20/babel.js"
+        type="application/javascript"></script>
+<script src="https://s3.pstatp.com/cdn/expire-1-M/moment.js/2.24.0/moment-with-locales.min.js"
+        type="application/javascript"></script>
+<script src="https://s1.pstatp.com/cdn/expire-1-M/moment.js/2.24.0/locale/zh-cn.js"
+        type="application/javascript"></script>
+<script src="https://s2.pstatp.com/cdn/expire-1-M/react/16.8.6/umd/react.development.js"
+        type="application/javascript"></script>
+<script src="https://s1.pstatp.com/cdn/expire-1-M/react-dom/16.8.6/umd/react-dom.development.js"
+        type="application/javascript"></script>
+<script src="https://s3.pstatp.com/cdn/expire-1-M/antd/3.24.2/dist/antd-with-locales.min.js"
+        type="application/javascript"></script>
+<script src="plugins/LodopFuncs.js"></script>
+<script type="text/babel" src="components/Calendar.js"></script>
+<script type="text/babel" src="components/Table.js"></script>
+<script type="text/babel" src="components/Lattice.js"></script>
+<script type="text/babel" src="components/PrintCountData.js"></script>
+<script src="plugins/jr-qrcode.js"></script>
+<script type="text/babel" src="print.js"></script>
+<script type="text/babel">
+    // moment.updateLocale('zh-cn');
+    window.onload = () => {
+        window.LODOP = getLodop();
+    }
+    class App extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                locale: props.appLocale,
+                visible: false,
+                date: '',
+                latticeNum: 0,
+                deviceId: 0,
+                deviceLatticeTitle: '',
+                printCountDataTitle: '',
+                printCountDataVisible: false,
+                printCountData: [],
+            }
+        }
+
+        openDeviceLattice(date, deviceId, latticeNum, title) {
+            this.setState({
+                visible: true,
+                date: date,
+                latticeNum: latticeNum,
+                deviceId: deviceId,
+                title: title
+            })
+        }
+
+        openPrintCountData(date, data, deviceId = '') {
+            this.setState({
+                printCountData: data,
+                printCountDataTitle: `${date} ${deviceId} 总单详情`,
+                printCountDataVisible: true,
+            })
+        }
+
+        onPrintCountDataClose = () => {
+            console.log('close')
+            this.setState({
+                printCountDataVisible: false,
+            })
+        }
+
+        onClose = () => {
+            this.setState({
+                visible: false,
+            });
+        }
+
+        render() {
+            return (
+                <antd.ConfigProvider locale={this.state.locale}>
+                    <Calendar parent={this}></Calendar>
+                    <antd.Drawer
+                        title={this.state.deviceLatticeTitle}
+                        placement={'right'}
+                        closable={true}
+                        destroyOnClose={true}
+                        width={830}
+                        onClose={this.onClose}
+                        visible={this.state.visible}>
+                        <Lattice
+                            date={this.state.date}
+                            deviceId={this.state.deviceId}
+                            latticeNum={this.state.latticeNum}
+                        />
+                    </antd.Drawer>
+
+                    <antd.Drawer
+                        closable={true}
+                        title=" "
+                        placement={'right'}
+                        visible={this.state.printCountDataVisible}
+                        destroyOnClose={true}
+                        onClose={this.onPrintCountDataClose}
+                        maskClosable={true}
+                        width={800}
+                    >
+                        <PrintCountData
+                            title={this.state.printCountDataTitle}
+                            data={this.state.printCountData}></PrintCountData>
+                    </antd.Drawer>
+                </antd.ConfigProvider>
+            );
+        }
+    }
+
+    ReactDOM.render(<App appLocale={antd.locales.zh_CN}/>, document.getElementById("root"));
+</script>
+</body>
+</html>
