@@ -4,10 +4,12 @@ window.Table = class table extends React.Component {
         this.state = {
             parent: props.parent,
             loading: true,
+            loadingText: "正在获取柜机列表",
             date: props.date,
             fullDate: props.fullDate,
             buttonSize: 'small',
             dataSource: [],
+            waitPull: [],
             columns: [
                 {
                     title: 'ID',
@@ -97,7 +99,15 @@ window.Table = class table extends React.Component {
     }
 
     setTableData(data) {
+        let wait = [];
         let source = data.map((value, index) => {
+            if (value.data_logs.length==0) {
+                wait.push({
+                    date: this.state.date,
+                    device_id: value.id,
+                    code: value.code,
+                });
+            }
             return {
                 key: index,
                 id: value.id,
@@ -108,10 +118,44 @@ window.Table = class table extends React.Component {
                 tagLoading: false,
             }
         });
+
         this.setState({
             dataSource: source,
-            loading: false,
-        })
+            waitPull: wait,
+            loadingText: `正在拉取数据, 进度:0.00%`,
+            loading: wait.length > 0 ? true : false,
+        });
+
+        if (wait.length > 0) {
+            this.pullData();
+        }
+    }
+
+    pullData() {
+        let copyData = this.state.waitPull;
+        let max = this.state.waitPull.length;
+        let count = 0;
+        let worker = new Worker('/workers/PullData.js');
+        worker.onmessage = (e) => {
+            count++;
+            if (!e.data.isSuccess) {
+                antd.message.error(e.data.message);
+            } else {
+                antd.message.success(e.data.message);
+            }
+            this.setState({
+                loadingText: `正在拉取数据, 进度:${(count/max).toFixed(2)}%`,
+            });
+            if (count == max) {
+                worker.terminate();
+                this.setState({
+                    loading: false,
+                });
+            } else {
+                worker.postMessage(copyData.shift());
+            }
+        }
+        worker.postMessage(copyData.shift());
     }
 
     deviceLatticeDetail(device) {
@@ -159,8 +203,8 @@ window.Table = class table extends React.Component {
                 });
                 copyData[device.key].loading = false;
                 this.setState({
-                    dataSource: copyData
-                })
+                    dataSource: copyData,
+                });
             })
     }
 
@@ -261,7 +305,9 @@ window.Table = class table extends React.Component {
 
     render() {
         return (
-            <antd.Table dataSource={this.state.dataSource} columns={this.state.columns} loading={this.state.loading}/>
+            <antd.Spin spinning={this.state.loading} tip={this.state.loadingText}>
+                <antd.Table dataSource={this.state.dataSource} columns={this.state.columns} />
+            </antd.Spin>
         );
     }
 }
