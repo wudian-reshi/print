@@ -209,53 +209,17 @@ window.Table = class table extends React.Component {
     }
 
     onPrintTags(device) {
-        this.getBatches(device);
+        this.getTagsData(device);
     }
 
-    getBatches(device) {
+    getTagsData(device) {
         let copyData = this.state.dataSource;
         copyData[device.key].tagLoading = true;
         this.setState({
             printCountDataloading: true,
             dataSource: copyData,
         })
-
-        fetch(`http://192.168.1.176:81/api/batches?date=${this.state.date}&device_id=${device.id}`)
-            .then((response) => {
-                return response.json();
-            })
-            .then((res) => {
-                if (res.code < 0) {
-                    antd.Modal.error({
-                        title: '出错了',
-                        content: `获取标签数据失败, 错误信息: ${res.message}`,
-                    });
-                    return;
-                }
-
-                this.getTagsData(device, res.data[0].id)
-
-            })
-            .catch(e => {
-                antd.Modal.error({
-                    title: '出错了',
-                    content: `获取标签数据失败, 错误信息: ${e}`,
-                });
-                copyData[device.key].tagLoading = false;
-                this.setState({
-                    dataSource: copyData
-                })
-            })
-    }
-
-    getTagsData(device, batchId) {
-        let copyData = this.state.dataSource;
-        copyData[device.key].tagLoading = true;
-        this.setState({
-            printCountDataloading: true,
-            dataSource: copyData,
-        })
-        fetch(`http://192.168.1.176:81/api/presets?batch_id=${batchId}`)
+        fetch(`http://192.168.1.176:81/api/tags?device_id=${device.id}&date=${this.state.date}`)
             .then((response) => {
                 return response.json();
             })
@@ -270,7 +234,7 @@ window.Table = class table extends React.Component {
 
                 let hide = antd.message.info('正在打印标签, 请稍后', 0);
                 new Promise((resolve, reject) => {
-                    printTags(res.data, resolve, reject);
+                    printTags(res.data.items, resolve, reject);
                 }).then((e) => {
                     hide();
                     antd.message.success('标签打印成功!', 2);
