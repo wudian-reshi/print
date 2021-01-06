@@ -9,9 +9,11 @@ function printCountData (element, success, error) {
     LODOP.PRINT_INIT('12312');
     LODOP.ADD_PRINT_HTM(30,5,"100%","80%",element);
     LODOP.PRINT();
+
     console.log('====获取到的需要打印的元素====');
     console.log(element);
     console.log('===========================');
+    return success();
 }
 
 /**

@@ -237,7 +237,7 @@ window.Table = class table extends React.Component {
                     printTags(res.data.items, resolve, reject);
                 }).then((e) => {
                     hide();
-                    antd.message.success('标签打印成功!', 2);
+                    antd.message.success('标签信息已加入打印队列!', 2);
                     copyData[device.key].tagLoading = false;
                     this.setState({
                         dataSource: copyData
