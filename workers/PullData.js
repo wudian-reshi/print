@@ -3,7 +3,7 @@ addEventListener('message', (e) => {
 }, false);
 
 function request(data) {
-    fetch('http://192.168.1.176:81/api/tags', {
+    fetch('http://api.kitchen.local.com/api/tags', {
         method: 'POST',
         headers: new Headers({
             'Content-Type': 'application/json'

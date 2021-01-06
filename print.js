@@ -6,7 +6,6 @@
  */
 function printCountData (element, success, error) {
     // 可以直接使用 LODOP
-
     LODOP.PRINT_INIT('12312');
     LODOP.ADD_PRINT_HTM(30,5,"100%","80%",element);
     LODOP.PRINT();

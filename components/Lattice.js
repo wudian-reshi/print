@@ -26,7 +26,7 @@ window.Lattice = class lattice extends React.Component {
     getBatches() {
         console.log('获取批次')
         console.log(this.state)
-        fetch(`http://192.168.1.176:81/api/batches?date=${this.state.date}&device_id=${this.state.deviceId}`)
+        fetch(`http://api.kitchen.local.com/api/batches?date=${this.state.date}&device_id=${this.state.deviceId}`)
             .then((response) => {
                 return response.json();
             })
@@ -59,7 +59,7 @@ window.Lattice = class lattice extends React.Component {
     }
 
     getPresets(batchId) {
-        fetch(`http://192.168.1.176:81/api/presets?batch_id=${batchId}`)
+        fetch(`http://api.kitchen.local.com/api/presets?batch_id=${batchId}`)
             .then((response) => {
                 return response.json();
             })

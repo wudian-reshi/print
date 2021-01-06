@@ -74,7 +74,7 @@ window.Table = class table extends React.Component {
     }
 
     getDeviceList() {
-        fetch(`http://192.168.1.176:81/api/devices?date=${this.state.date}`)
+        fetch(`http://api.kitchen.local.com/api/devices?date=${this.state.date}`)
             .then((response) => {
                 return response.json();
             })
@@ -175,7 +175,7 @@ window.Table = class table extends React.Component {
             dataSource: copyData,
         })
 
-        fetch(`http://192.168.1.176:81/api/goods?date=${this.state.date}&device_id=${device.id}`)
+        fetch(`http://api.kitchen.local.com/api/goods?date=${this.state.date}&device_id=${device.id}`)
             .then((response) => {
                 return response.json();
             })
@@ -219,7 +219,7 @@ window.Table = class table extends React.Component {
             printCountDataloading: true,
             dataSource: copyData,
         })
-        fetch(`http://192.168.1.176:81/api/tags?device_id=${device.id}&date=${this.state.date}`)
+        fetch(`http://api.kitchen.local.com/api/tags?device_id=${device.id}&date=${this.state.date}`)
             .then((response) => {
                 return response.json();
             })

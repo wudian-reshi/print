@@ -65,7 +65,7 @@ window.Calendar = class calendar extends React.Component {
             loading: true,
         })
 
-        fetch(`http://192.168.1.176:81/api/goods?date=${this.state.date2}`)
+        fetch(`http://api.kitchen.local.com/api/goods?date=${this.state.date2}`)
             .then((response) => {
                 return response.json();
             })
